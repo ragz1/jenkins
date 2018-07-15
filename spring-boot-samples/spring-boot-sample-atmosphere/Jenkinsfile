@@ -2,11 +2,11 @@ node {
     
     notify("started") //calling email notification code chek bleow
     
-     stage('checkout') {
+//     stage('checkout') {
          
-      git 'https://github.com/ragz1/jenkins.git'
+//      git 'https://github.com/ragz1/jenkins.git'
       
-     }
+//     }
       def project_path ="spring-boot-samples/spring-boot-sample-atmosphere"
 
    stage('complie,test and package') {
