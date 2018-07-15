@@ -10,25 +10,23 @@ pipeline {
 
 			stage('complie,test and package') {
 
-				step {
+				steps {
          
-     			 	dir(project_path) {
+     			 		dir(project_path) {
     
-        				sh 'mvn clean package'
-
-         			}
+        					sh 'mvn clean package'
+         				}
      			}
     		
     			post {
 
   					success {
 
-  						notify('build and package success')
-
+  						notify('build_package_success')
   					}
 
   					failure {
-  						notify('build and package failure')
+  						notify('build_package_failure')
 
   					}
 				}
@@ -37,12 +35,12 @@ pipeline {
 
 			stage('artifact') {
 
-				step {
+				steps {
          
-     			 	dir(project_path) {
+     			 		dir(project_path) {
     
-        				archiveArtifacts 'target/*.jar'
-        			}
+        					archiveArtifacts 'target/*.jar'
+        				}
 
       			}
 
@@ -50,12 +48,12 @@ pipeline {
 
   					success {
 
-  						notify('artifact success')
+  						notify('artifact_success')
 
   					}
 
   					failure {
-  						notify('artifact failure')
+  						notify('artifact_failure')
 
   					}
 				}
@@ -64,24 +62,24 @@ pipeline {
 
     		 stage('junit'){
 
-    		 	step{
+    		 	steps {
 
-    		 		dir(project_path) {
+    		 			dir(project_path) {
     
-        				junit 'target/surefire-reports/*.xml'
-        			}
+        					junit 'target/surefire-reports/*.xml'
+        				}
     		 	}
 
     		 	post {
 
   					success {
 
-  						notify('junit success')
+  						notify('junit_success')
 
   					}
 
   					failure {
-  						notify('junit failure')
+  						notify('junit_failure')
 
   					}
 				}
