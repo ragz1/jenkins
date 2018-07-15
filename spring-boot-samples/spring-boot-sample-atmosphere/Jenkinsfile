@@ -1,57 +1,105 @@
-node {
-    
-    notify("started") //calling email notification code chek bleow
-    
-//     stage('checkout') {
+pipeline {
+	
+	agent any
+
+	environment {
+  		project_path = "spring-boot-samples/spring-boot-sample-atmosphere"
+	}
+
+	stages{
+
+			stage('complie,test and package') {
+
+				step {
          
-//      git 'https://github.com/ragz1/jenkins.git'
+     			 	dir(project_path) {
+    
+        				sh 'mvn clean package'
+
+         			}
+     			}
+    		
+    			post {
+
+  					success {
+
+  						notify('build and package success')
+
+  					}
+
+  					failure {
+  						notify('build and package failure')
+
+  					}
+				}
+
+			} // end of complile,test and package
+
+			stage('artifact') {
+
+				step {
+         
+     			 	dir(project_path) {
+    
+        				archiveArtifacts 'target/*.jar'
+        			}
+
+      			}
+
+      			post {
+
+  					success {
+
+  						notify('artifact success')
+
+  					}
+
+  					failure {
+  						notify('artifact failure')
+
+  					}
+				}
       
-//     }
-      def project_path ="spring-boot-samples/spring-boot-sample-atmosphere"
+    		 } // end of artifact
 
-   stage('complie,test and package') {
-         
-      dir(project_path) {
+    		 stage('junit'){
+
+    		 	step{
+
+    		 		dir(project_path) {
     
-        sh 'mvn clean package'
+        				junit 'target/surefire-reports/*.xml'
+        			}
+    		 	}
 
-        
-      }
+    		 	post {
 
-    }
-    
-    stage('artifact') {
-         
-      dir(project_path) {
-    
-        archiveArtifacts 'target/*.jar'
+  					success {
 
-      }
-      
-     }
-   
- stage('junit') {
-         
-      dir(project_path) {
-    
-        junit 'target/surefire-reports/*.xml'
+  						notify('junit success')
+
+  					}
+
+  					failure {
+  						notify('junit failure')
+
+  					}
+				}
 
 
-      }
-      
-     }
-    
+    		 } // end of junit stage
 
-}
 
+	} // end os stages
+
+
+} // end of pipeline
 
 def notify(status){
     emailext (
-      to: "anil.maharshi@gmail.com",
+      to: "raghav.mk@gmail.com",
       subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
       body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
         <p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
     )
 }
-
-
